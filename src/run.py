@@ -7,11 +7,10 @@ import torch.nn as nn
 
 
 def runDeepGraphlet(deviceID):
-    
     time_start = time.time()
     nowTime = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
     resultWritter = ResultWritter("../result/" + nowTime)
-    
+
     for dataName in ["artist_edges"]:
         args = {}
         args['numLayer'] = 3
@@ -29,17 +28,18 @@ def runDeepGraphlet(deviceID):
         args['aggregator'] = "mean"
         args['loss'] = "kl"
 
-        
-        model = PipeLine(["../data/" + dataName], resultWritter = resultWritter, args = args, deviceID = deviceID, writeInfo = deviceID)
+        model = PipeLine(["../data/" + dataName], resultWritter=resultWritter, args=args, deviceID=deviceID,
+                         writeInfo=deviceID)
         model.load_args(args)
-        model.train_graph(modelPath = "../model/" + dataName)
+        model.train_graph(modelPath="../model/" + dataName)
         valData = ["../data/" + dataName + ".edges"]
         model.load_infer_data(valData)
-        # model = PipeLine(["../data/" + dataName],resultWritter = resultWritter, args = args, deviceID = deviceID, writeInfo = deviceID)
-        model.LoadModel(modelPath = "../model/" + dataName)
-        model.inferRealGraph(needLabel = True)
+        # model = PipeLine(["../data/" + dataName],resultWritter = resultWritter, args = args, deviceID = deviceID,
+        # writeInfo = deviceID)
+        model.LoadModel(modelPath="../model/" + dataName)
+        model.inferRealGraph(needLabel=True)
         time_end = time.time()
-        print("time cost",time_end - time_start,'s')
+        print("time cost", time_end - time_start, 's')
         # resultWritter.writeResult('summary.txt', "time cost" + str(time_end - time_start) + 's')
 
 
