@@ -391,9 +391,9 @@ class PipeLine:
             features, _, adj, labels = self.valData[i]
 
             adj = adj[self.args['aggregator']]
-            if self.args['useKTupleFeature'] == True:
+            if self.args['useKTupleFeature']:
                 features = features['ktuple']
-            elif self.args['useRandomFeature'] == True:
+            elif self.args['useRandomFeature']:
                 features = features['random']
             else:
                 features = features['raw']
