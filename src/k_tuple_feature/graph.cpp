@@ -109,27 +109,30 @@ void Graph::getKtuples(unsigned char K, unsigned char num_sample, unsigned char 
     time_t ktuple_start_time = time(NULL);
     IsomorphicIndexer* isomorphic_indexer = new IsomorphicIndexer();
     std::vector<int> degree(N); //ljr: N: the number of nodes
+
+    //ljr: initialize degree, adj, alias(for random sampling), feature
     #pragma omp parallel for num_threads(thread) schedule(dynamic, 1)
     for (int i = 0; i < N ; i++)
         degree[i] = judge_edge[i].size();   //ljr: degree is number of neighbors
 
     std::vector<std::vector<int>> adj(N);
     std::vector<Alias *> alias(N);  //ljr: N alias
-    unsigned char length = (K == 3 ? 2 : (K == 4 ? 8 : 29));
+    unsigned char length = (K == 3 ? 2 : (K == 4 ? 8 : 29));    // different k different number of tuple types
     std::vector<std::vector<unsigned char>> feature(N, std::vector<unsigned char>(length, 0));
 
+    //ljr: fill adj, prob, alias
     #pragma omp parallel for num_threads(thread) schedule(dynamic, 1)
     for (int i = 0; i < N; i++) {
         int len = judge_edge[i].size();
-        adj[i] = *(new std::vector<int>(len));
+        adj[i] = *(new std::vector<int>(len));  //ljr: adjacent list
         std::vector<double> prob(len);
         int count = 0;
         for (int v : judge_edge[i]) {
             adj[i][count] = v;
-            prob[count] = degree[v];
+            prob[count] = degree[v];    //ljr: probability is degree
             count++;
         }
-        alias[i] = new Alias(&prob);
+        alias[i] = new Alias(&prob);    //ljr: for every node, each neighbor has different prob
     }
 
     std::cout << "phrase1 time: " << time(NULL) - ktuple_start_time << std::endl;
