@@ -156,13 +156,16 @@ class PipeLine:
     def GenerateFeedDict(self, fileName="test", needLabel=True, cpu=False):
 
         # Do this edge have been cleaned ?
+        # ljr: edgeList: [[u1, v1], [u2, v2], ..., ]
         nodeCnt, edgeCnt, edgeList = readEdgeList(fileName)
         nodeFeature = {}
         nodeFeature['raw'] = torch.from_numpy(np.ones((nodeCnt, 1))).float()
         # if self.args['useRandomFeature'] == True:
+        # ljr: random feature: dim = 29
         nodeFeature['random'] = torch.from_numpy(np.random.rand(nodeCnt, 29) - 0.5).float()
         # elif self.args['useKTupleFeature'] == True:
         prefix, _ = split_between_last_char(fileName, '.')
+        # ljr: what?
         nodeFeature['ktuple'] = torch.from_numpy(np.loadtxt(prefix + ".edges_features5") / 100).float()
         # ???
 
