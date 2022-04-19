@@ -25,13 +25,13 @@ Graph::Graph(std::string now_path) {
     file_path = now_path;
     char *data = NULL;
     int fd = open(now_path.c_str(), O_RDONLY); 
-    long long size = lseek(fd, 0, SEEK_END);
+    long long size = lseek(fd, 0, SEEK_END);    //ljr: return the location (How many Byte from head)
     printf("size: %lld\n", size);
-    data = (char *) mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    data = (char *) mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);    //ljr: map the file (or object) into memory
     close(fd);
     long long count = 0;
     bool flag = 0;
-    long long idx = 0;
+    long long idx = 0;  //ljr: no use
     long long cnt = 0;
     while (count < size - 1) {
         std::vector<std::string> row = csv_read_row(&count, ' ', data);
@@ -45,14 +45,14 @@ Graph::Graph(std::string now_path) {
             judge_edge[u].insert(v);
             judge_edge[v].insert(u);
         } else {
-            N = atoi(row[0].c_str());
-            M = atoi(row[1].c_str());
+            N = atoi(row[0].c_str());   //ljr: node num
+            M = atoi(row[1].c_str());   //ljr: edge num
             judge_edge.resize(N);
         }
         idx++;
         flag = 1;
     }
-    munmap(data, size);
+    munmap(data, size); //ljr: release mmap()
 }
 
 void Graph::pure(std::string now_path) {
@@ -108,13 +108,13 @@ void Graph::getKtuples(unsigned char K, unsigned char num_sample, unsigned char 
     std::cout << K << " " << num_sample << " " << thread << std::endl;
     time_t ktuple_start_time = time(NULL);
     IsomorphicIndexer* isomorphic_indexer = new IsomorphicIndexer();
-    std::vector<int> degree(N);
+    std::vector<int> degree(N); //ljr: N: the number of nodes
     #pragma omp parallel for num_threads(thread) schedule(dynamic, 1)
     for (int i = 0; i < N ; i++)
-        degree[i] = judge_edge[i].size();
+        degree[i] = judge_edge[i].size();   //ljr: degree is number of neighbors
 
     std::vector<std::vector<int>> adj(N);
-    std::vector<Alias *> alias(N);
+    std::vector<Alias *> alias(N);  //ljr: N alias
     unsigned char length = (K == 3 ? 2 : (K == 4 ? 8 : 29));
     std::vector<std::vector<unsigned char>> feature(N, std::vector<unsigned char>(length, 0));
 

@@ -1,7 +1,7 @@
 #ifndef __ALIAS_H__
 #define __ALIAS_H__
 #include <vector>
-#include "MT19937.h"
+#include "MT19937.h"    // for random number
 class Alias{
     public:
          int len;
